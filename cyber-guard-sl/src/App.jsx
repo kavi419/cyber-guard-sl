@@ -9,6 +9,7 @@ import ReportScam from './components/ReportScam';
 import Footer from './components/Footer';
 import MatrixRain from './components/MatrixRain';
 import CustomCursor from './components/CustomCursor';
+import PasswordStrengthTool from './components/PasswordStrengthTool';
 import { motion, AnimatePresence } from 'framer-motion';
 
 function App() {
@@ -99,6 +100,16 @@ function App() {
                     transition={{ duration: 0.3 }}
                   >
                     <ReportScam />
+                  </motion.div>
+                ) : currentView === 'password-tool' ? (
+                  <motion.div
+                    key="password-tool"
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -20 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <PasswordStrengthTool />
                   </motion.div>
                 ) : (
                   <motion.div
