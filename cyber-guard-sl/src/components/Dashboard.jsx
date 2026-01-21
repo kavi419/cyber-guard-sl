@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import ThreatMap from './ThreatMap';
+import ThreatAnalytics from './ThreatAnalytics';
 import TerminalLogs from './TerminalLogs';
 
 const CyberCard = ({ title, children, className = "" }) => (
@@ -17,9 +17,9 @@ const CyberCard = ({ title, children, className = "" }) => (
 const Dashboard = () => {
     return (
         <div className="p-8 pt-24 min-h-screen grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Card 1: Global Threat Map */}
-            <CyberCard title="Global Threat Map" className="col-span-1 md:col-span-2 row-span-2 h-[500px] relative w-full p-0 overflow-hidden">
-                <ThreatMap />
+            {/* Card 1: Threat Analytics Panel */}
+            <CyberCard title="Threat Analytics" className="col-span-1 md:col-span-2 row-span-2 h-[500px] relative w-full p-0 overflow-hidden">
+                <ThreatAnalytics />
             </CyberCard>
 
             {/* Card 2: System Status */}

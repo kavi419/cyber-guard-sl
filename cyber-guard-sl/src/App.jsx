@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import ThreeDGlobe from './components/ThreeDGlobe';
 import GlitchText from './components/GlitchText';
 import Navbar from './components/Navbar';
 import Dashboard from './components/Dashboard';
 import PasswordChecker from './components/PasswordChecker';
-import ScamFeed from './components/ScamFeed';
+import ScamAlerts from './components/ScamAlerts';
 import ReportScam from './components/ReportScam';
 import Footer from './components/Footer';
 import MatrixRain from './components/MatrixRain';
@@ -12,21 +13,23 @@ import CustomCursor from './components/CustomCursor';
 import PasswordStrengthTool from './components/PasswordStrengthTool';
 import EmailBreachChecker from './components/EmailBreachChecker';
 import LiveMapPage from './pages/LiveMapPage';
+import ScamArticle from './pages/ScamArticle';
 import { motion, AnimatePresence } from 'framer-motion';
 
-function App() {
+// --- Main System Interface (Dashboard) ---
+const SystemInterface = () => {
   const [isSystemReady, setSystemReady] = useState(false);
+
+
   const [currentView, setCurrentView] = useState('dashboard');
 
-  return (
-    <div className="min-h-screen text-white overflow-x-hidden relative cursor-none">
-      <CustomCursor />
-      <MatrixRain />
-      {/* Scanline Overlay */}
-      <div className="scanline-overlay">
-        <div className="scanline-moving-bar"></div>
-      </div>
+  const handleInitialize = () => {
+    setSystemReady(true);
+  };
 
+
+  return (
+    <>
       <AnimatePresence mode='wait'>
         {!isSystemReady ? (
           /* Landing View */
@@ -46,7 +49,7 @@ function App() {
               </p>
               <div>
                 <button
-                  onClick={() => setSystemReady(true)}
+                  onClick={handleInitialize}
                   className="px-6 py-3 border border-cyber-green text-cyber-green font-bold font-mono rounded hover:bg-cyber-green hover:text-black transition cursor-pointer"
                 >
                   Initialize System
@@ -91,7 +94,7 @@ function App() {
                     exit={{ opacity: 0, x: -20 }}
                     transition={{ duration: 0.3 }}
                   >
-                    <ScamFeed />
+                    <ScamAlerts />
                   </motion.div>
                 ) : currentView === 'report' ? (
                   <motion.div
@@ -135,13 +138,12 @@ function App() {
                   </motion.div>
                 ) : (
                   <motion.div
-                    key="dashboard"
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -20 }}
-                    transition={{ duration: 0.3 }}
+                    key="default"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
                   >
-                    <PasswordChecker />
+                    <Dashboard />
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -149,6 +151,29 @@ function App() {
             <Footer />
           </motion.div>
         )}
+      </AnimatePresence>
+    </>
+  );
+};
+
+// --- App Container with Routing ---
+function App() {
+  const location = useLocation();
+
+  return (
+    <div className="min-h-screen text-white overflow-x-hidden relative cursor-none bg-transparent">
+      <CustomCursor />
+      <MatrixRain />
+      {/* Scanline Overlay */}
+      <div className="scanline-overlay pointer-events-none z-50 fixed inset-0">
+        <div className="scanline-moving-bar"></div>
+      </div>
+
+      <AnimatePresence mode='wait'>
+        <Routes location={location} key={location.pathname}>
+          <Route path="/" element={<SystemInterface />} />
+          <Route path="/scam/:id" element={<ScamArticle />} />
+        </Routes>
       </AnimatePresence>
     </div>
   );
