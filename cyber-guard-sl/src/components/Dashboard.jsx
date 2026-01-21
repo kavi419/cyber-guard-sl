@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import ThreatMap from './ThreatMap';
+import TerminalLogs from './TerminalLogs';
 
 const CyberCard = ({ title, children, className = "" }) => (
     <motion.div
@@ -33,18 +34,8 @@ const Dashboard = () => {
             </CyberCard>
 
             {/* Card 3: Recent Alerts */}
-            <CyberCard title="Recent Alerts" className="col-span-1">
-                <ul className="space-y-3">
-                    {[
-                        { id: 1, msg: "Phishing detected in WhatsApp Group A", level: "warning" },
-                        { id: 2, msg: "Suspicious login attempt blocked (IP: 192.168.x.x)", level: "danger" },
-                        { id: 3, msg: "New malware signature database updated", level: "info" }
-                    ].map((alert) => (
-                        <li key={alert.id} className="text-sm font-mono p-2 border-l-2 border-cyber-green bg-black/20 hover:bg-black/40 transition">
-                            <span className="block text-gray-300">{alert.msg}</span>
-                        </li>
-                    ))}
-                </ul>
+            <CyberCard title="Live System Logs" className="col-span-1">
+                <TerminalLogs />
             </CyberCard>
         </div>
     );

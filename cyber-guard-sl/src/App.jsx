@@ -10,6 +10,7 @@ import Footer from './components/Footer';
 import MatrixRain from './components/MatrixRain';
 import CustomCursor from './components/CustomCursor';
 import PasswordStrengthTool from './components/PasswordStrengthTool';
+import EmailBreachChecker from './components/EmailBreachChecker';
 import { motion, AnimatePresence } from 'framer-motion';
 
 function App() {
@@ -111,9 +112,19 @@ function App() {
                   >
                     <PasswordStrengthTool />
                   </motion.div>
+                ) : currentView === 'email-check' ? (
+                  <motion.div
+                    key="email-check"
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -20 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <EmailBreachChecker />
+                  </motion.div>
                 ) : (
                   <motion.div
-                    key="password-checker"
+                    key="dashboard"
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: -20 }}

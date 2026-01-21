@@ -28,6 +28,11 @@ const Navbar = ({ setCurrentView }) => {
                     Scam Alerts
                 </button>
                 <button
+                    onClick={() => setCurrentView('email-check')}
+                    className="text-gray-300 hover:text-cyber-green font-mono transition-colors duration-300 text-sm uppercase tracking-widest hover:underline decoration-cyber-green decoration-2 underline-offset-4 bg-transparent border-none cursor-pointer">
+                    Breach Scan
+                </button>
+                <button
                     onClick={() => setCurrentView('password-tool')}
                     className="text-gray-300 hover:text-cyber-green font-mono transition-colors duration-300 text-sm uppercase tracking-widest hover:underline decoration-cyber-green decoration-2 underline-offset-4 bg-transparent border-none cursor-pointer"
                 >
