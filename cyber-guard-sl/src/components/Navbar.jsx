@@ -17,7 +17,10 @@ const Navbar = ({ setCurrentView }) => {
             </div>
             <div className="flex space-x-8">
                 <button
-                    onClick={() => setCurrentView('dashboard')}
+                    onClick={() => {
+                        window.scrollTo(0, 0);
+                        setCurrentView('live-map');
+                    }}
                     className="text-gray-300 hover:text-cyber-green font-mono transition-colors duration-300 text-sm uppercase tracking-widest hover:underline decoration-cyber-green decoration-2 underline-offset-4 bg-transparent border-none cursor-pointer"
                 >
                     Live Map

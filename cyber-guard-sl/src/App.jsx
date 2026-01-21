@@ -11,6 +11,7 @@ import MatrixRain from './components/MatrixRain';
 import CustomCursor from './components/CustomCursor';
 import PasswordStrengthTool from './components/PasswordStrengthTool';
 import EmailBreachChecker from './components/EmailBreachChecker';
+import LiveMapPage from './pages/LiveMapPage';
 import { motion, AnimatePresence } from 'framer-motion';
 
 function App() {
@@ -121,6 +122,16 @@ function App() {
                     transition={{ duration: 0.3 }}
                   >
                     <EmailBreachChecker />
+                  </motion.div>
+                ) : currentView === 'live-map' ? (
+                  <motion.div
+                    key="live-map"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.5 }}
+                  >
+                    <LiveMapPage />
                   </motion.div>
                 ) : (
                   <motion.div
