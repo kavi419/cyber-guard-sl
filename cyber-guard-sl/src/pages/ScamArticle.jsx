@@ -1,5 +1,4 @@
-import React from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { scamData } from '../data/scamData';
 import { motion } from 'framer-motion';
 
@@ -26,14 +25,15 @@ const ScamArticle = () => {
             {/* Content Container */}
             <div className="relative z-10 container mx-auto px-6 py-12 max-w-4xl">
 
-                {/* Back Button */}
-                <button
-                    onClick={() => navigate(-1)}
-                    className="mb-8 flex items-center space-x-2 text-cyber-green hover:text-white transition-colors duration-300 group"
+                {/* Back Link - Preserves State */}
+                <Link
+                    to="/"
+                    state={{ view: 'scam-feed', skipLanding: true }}
+                    className="mb-8 flex items-center space-x-2 text-cyber-green hover:text-white transition-colors duration-300 group w-fit"
                 >
                     <span className="text-xl">&larr;</span>
                     <span className="uppercase tracking-widest text-sm border-b border-transparent group-hover:border-white">Back to Intel</span>
-                </button>
+                </Link>
 
                 {/* Header */}
                 <motion.div

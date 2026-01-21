@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
-import ThreeDGlobe from './components/ThreeDGlobe';
-import GlitchText from './components/GlitchText';
+// ThreeDGlobe and GlitchText moved to LandingPage.jsx
 import Navbar from './components/Navbar';
 import Dashboard from './components/Dashboard';
 import PasswordChecker from './components/PasswordChecker';
@@ -13,18 +12,32 @@ import CustomCursor from './components/CustomCursor';
 import PasswordStrengthTool from './components/PasswordStrengthTool';
 import EmailBreachChecker from './components/EmailBreachChecker';
 import LiveMapPage from './pages/LiveMapPage';
+import LandingPage from './components/LandingPage';
 import ScamArticle from './pages/ScamArticle';
 import { motion, AnimatePresence } from 'framer-motion';
 
 // --- Main System Interface (Dashboard) ---
 const SystemInterface = () => {
-  const [isSystemReady, setSystemReady] = useState(false);
+  const location = useLocation();
 
+  // Check if we should skip the landing page (e.g. returning from internal navigation)
+  // CRITICAL: Force Landing Page on Browser Refresh (Reload)
+  const [isSystemReady, setSystemReady] = useState(() => {
+    const navEntries = performance.getEntriesByType("navigation");
+    if (navEntries.length > 0 && navEntries[0].type === 'reload') {
+      return false;
+    }
+    return location.state?.skipLanding || false;
+  });
 
-  const [currentView, setCurrentView] = useState('dashboard');
+  const [currentView, setCurrentView] = useState(() => {
+    // Check if arriving with a specific view request (e.g. Back from Article)
+    return location.state?.view || 'dashboard';
+  });
 
   const handleInitialize = () => {
     setSystemReady(true);
+    setCurrentView('dashboard'); // Ensure we land on the Dashboard
   };
 
 
@@ -32,36 +45,8 @@ const SystemInterface = () => {
     <>
       <AnimatePresence mode='wait'>
         {!isSystemReady ? (
-          /* Landing View */
-          <motion.div
-            key="landing"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0, scale: 1.1, filter: "blur(10px)" }}
-            transition={{ duration: 0.8 }}
-            className="flex h-screen w-full relative z-10"
-          >
-            {/* Left Side: Text */}
-            <div className="w-1/2 flex flex-col justify-center p-12 z-10">
-              <GlitchText text="CyberGuard SL" />
-              <p className="text-xl text-gray-300 font-mono mb-8">
-                Secure. Monitor. Protect.
-              </p>
-              <div>
-                <button
-                  onClick={handleInitialize}
-                  className="px-6 py-3 border border-cyber-green text-cyber-green font-bold font-mono rounded hover:bg-cyber-green hover:text-black transition cursor-pointer"
-                >
-                  Initialize System
-                </button>
-              </div>
-            </div>
-
-            {/* Right Side: Globe */}
-            <div className="w-1/2 h-full z-0">
-              <ThreeDGlobe />
-            </div>
-          </motion.div>
+          /* Landing View Component */
+          <LandingPage onInitialize={handleInitialize} />
         ) : (
           /* Main Interface */
           <motion.div

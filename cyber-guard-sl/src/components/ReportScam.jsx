@@ -6,10 +6,13 @@ const ReportScam = () => {
     const [formData, setFormData] = useState({
         threatType: '',
         attackerDetails: '',
-        description: ''
+        description: '',
+        file: null
     });
 
     const [loadingText, setLoadingText] = useState("OPENING SECURE UPLINK...");
+
+    const [errors, setErrors] = useState({});
 
     useEffect(() => {
         if (step === 'loading') {
@@ -32,9 +35,46 @@ const ReportScam = () => {
         }
     }, [step]);
 
+    const validateForm = () => {
+        const newErrors = {};
+
+        // Regex Patterns
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const urlRegex = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/i;
+        const phoneRegex = /^[\d\+\-\s\(\)]{9,}$/; // Allows digits, +, -, spaces, parens (min 9 chars)
+
+        if (!formData.threatType) newErrors.threatType = "PROTOCOL REQUIRED";
+
+        // Validate Target Identifier (Must be Email, URL, or Phone)
+        if (!formData.attackerDetails || formData.attackerDetails.length < 3) {
+            newErrors.attackerDetails = "INVALID IDENTIFIER";
+        } else {
+            const val = formData.attackerDetails;
+            if (!emailRegex.test(val) && !urlRegex.test(val) && !phoneRegex.test(val)) {
+                newErrors.attackerDetails = "MUST BE VALID URL, EMAIL, OR PHONE";
+            }
+        }
+
+        if (!formData.description || formData.description.length < 10) newErrors.description = "DATA INSUFFICIENT";
+
+        // Validate File
+        if (!formData.file) newErrors.file = "EVIDENCE REQUIRED";
+
+        return newErrors;
+    };
+
     const handleSubmit = (e) => {
         e.preventDefault();
+
+        const validationErrors = validateForm();
+        if (Object.keys(validationErrors).length > 0) {
+            setErrors(validationErrors);
+            return;
+        }
+
         setStep('submitting');
+        // Clear previous errors
+        setErrors({});
 
         // Simulate encryption and transmission
         const texts = [
@@ -53,7 +93,7 @@ const ReportScam = () => {
                     setStep('success');
                     // Reset form after 2 seconds
                     setTimeout(() => {
-                        setFormData({ threatType: '', attackerDetails: '', description: '' });
+                        setFormData({ threatType: '', attackerDetails: '', description: '', file: null });
                         setStep('form');
                     }, 2000);
                 }, 500);
@@ -63,6 +103,16 @@ const ReportScam = () => {
 
     const handleInputChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
+        if (errors[e.target.name]) {
+            setErrors({ ...errors, [e.target.name]: null });
+        }
+    };
+
+    const handleFileChange = (e) => {
+        setFormData({ ...formData, file: e.target.files[0] });
+        if (errors.file) {
+            setErrors({ ...errors, file: null });
+        }
     };
 
     return (
@@ -124,13 +174,17 @@ const ReportScam = () => {
 
                             {/* Threat Type */}
                             <div className="flex flex-col space-y-2">
-                                <label className="text-xs uppercase tracking-widest text-gray-400">Threat Vector</label>
+                                <label className="text-xs uppercase tracking-widest text-gray-400">
+                                    Threat Vector {errors.threatType && <span className="text-red-500 animate-pulse ml-2">// {errors.threatType}</span>}
+                                </label>
                                 <select
                                     name="threatType"
                                     value={formData.threatType}
                                     onChange={handleInputChange}
-                                    className="bg-gray-900/50 border border-cyber-green/50 p-3 text-white focus:outline-none focus:border-cyber-green focus:ring-1 focus:ring-cyber-green transition-all"
-                                    required
+                                    className={`bg-gray-900/50 border p-3 text-white focus:outline-none focus:ring-1 transition-all ${errors.threatType
+                                        ? 'border-red-500 focus:border-red-500 focus:ring-red-500 text-red-100'
+                                        : 'border-cyber-green/50 focus:border-cyber-green focus:ring-cyber-green'
+                                        }`}
                                 >
                                     <option value="" disabled>SELECT VECTOR...</option>
                                     <option value="phishing">PHISHING ATTEMPT</option>
@@ -143,38 +197,63 @@ const ReportScam = () => {
 
                             {/* Attacker Details */}
                             <div className="flex flex-col space-y-2">
-                                <label className="text-xs uppercase tracking-widest text-gray-400">Target Identifier (URL / Phone / Email)</label>
+                                <label className="text-xs uppercase tracking-widest text-gray-400">
+                                    Target Identifier (URL / Phone / Email)
+                                    {errors.attackerDetails && <span className="text-red-500 animate-pulse ml-2">// {errors.attackerDetails}</span>}
+                                </label>
                                 <input
                                     type="text"
                                     name="attackerDetails"
                                     value={formData.attackerDetails}
                                     onChange={handleInputChange}
                                     placeholder="ENTER HOSTILE IDENTIFIER"
-                                    className="bg-gray-900/50 border border-cyber-green/50 p-3 text-white focus:outline-none focus:border-cyber-green focus:ring-1 focus:ring-cyber-green font-mono placeholder-gray-600"
-                                    required
+                                    className={`bg-gray-900/50 border p-3 text-white focus:outline-none focus:ring-1 font-mono placeholder-gray-600 ${errors.attackerDetails
+                                        ? 'border-red-500 focus:border-red-500 focus:ring-red-500'
+                                        : 'border-cyber-green/50 focus:border-cyber-green focus:ring-cyber-green'
+                                        }`}
                                 />
                             </div>
 
                             {/* Description */}
                             <div className="flex flex-col space-y-2">
-                                <label className="text-xs uppercase tracking-widest text-gray-400">Event Log / Details</label>
+                                <label className="text-xs uppercase tracking-widest text-gray-400">
+                                    Event Log / Details
+                                    {errors.description && <span className="text-red-500 animate-pulse ml-2">// {errors.description}</span>}
+                                </label>
                                 <textarea
                                     name="description"
                                     value={formData.description}
                                     onChange={handleInputChange}
                                     rows="4"
                                     placeholder="// Describe the incident protocol here..."
-                                    className="bg-gray-900/50 border border-cyber-green/50 p-3 text-white focus:outline-none focus:border-cyber-green focus:ring-1 focus:ring-cyber-green font-mono placeholder-gray-600"
-                                    required
+                                    className={`bg-gray-900/50 border p-3 text-white focus:outline-none focus:ring-1 font-mono placeholder-gray-600 ${errors.description
+                                        ? 'border-red-500 focus:border-red-500 focus:ring-red-500'
+                                        : 'border-cyber-green/50 focus:border-cyber-green focus:ring-cyber-green'
+                                        }`}
                                 ></textarea>
                             </div>
 
                             {/* File Input */}
                             <div className="flex flex-col space-y-2">
-                                <label className="text-xs uppercase tracking-widest text-gray-400">Digital Forensics (Screenshots/Logs)</label>
-                                <div className="relative border border-dashed border-cyber-green/50 bg-gray-900/30 p-8 text-center cursor-pointer hover:bg-cyber-green/10 transition-colors group">
-                                    <input type="file" className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
-                                    <p className="text-cyber-green group-hover:text-white transition-colors">&gt;&gt; UPLOAD_EVIDENCE_PACKET</p>
+                                <label className="text-xs uppercase tracking-widest text-gray-400">
+                                    Digital Forensics (Screenshots/Logs)
+                                    {errors.file && <span className="text-red-500 animate-pulse ml-2">// {errors.file}</span>}
+                                </label>
+                                <div className={`relative border border-dashed bg-gray-900/30 p-8 text-center cursor-pointer hover:bg-cyber-green/10 transition-colors group ${errors.file
+                                        ? 'border-red-500'
+                                        : 'border-cyber-green/50'
+                                    }`}>
+                                    <input
+                                        type="file"
+                                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                                        onChange={handleFileChange}
+                                    />
+                                    <p className={`transition-colors ${errors.file ? 'text-red-400' : 'text-cyber-green group-hover:text-white'}`}>
+                                        {formData.file
+                                            ? `>> PACKET READY: ${formData.file.name}`
+                                            : ">> UPLOAD_EVIDENCE_PACKET"
+                                        }
+                                    </p>
                                 </div>
                             </div>
 
