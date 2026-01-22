@@ -31,17 +31,17 @@
 
 ### 🌍 Global Threat Map (Live 3D Visualization)
 *Interactive 3D globe visualizing active cyber threats with neon laser tracking.*
-![Global Threat Map](./public/images/liveMap.png) 
+![Global Threat Map](cyber-guard-sl/public/images/map.png) 
 *(Note: Replace with your Live Map screenshot)*
 
 ### 📊 Threat Analytics Dashboard
 *Real-time monitoring of network traffic, threat levels, and system logs.*
-![Dashboard](./public/images/dashboard.png)
+![Dashboard](cyber-guard-sl/public/images/dash.png)
 *(Note: Replace with your Dashboard/Analytics screenshot)*
 
 ### 💀 Scam Intel Database
 *A dark-mode educational hub detailing common scams (Phishing, WhatsApp fraud) with prevention strategies.*
-![Scam Alerts](./public/images/scamPage.png)
+![Scam Alerts](cyber-guard-sl/public/images/scam.png)
 *(Note: Replace with your Scam Alerts page screenshot)*
 
 ---
